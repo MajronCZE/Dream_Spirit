@@ -381,6 +381,7 @@ GameObject:
   - component: {fileID: 300364329937593783}
   - component: {fileID: 5163331993402267425}
   - component: {fileID: 5853619368974993018}
+  - component: {fileID: 8174295294863350322}
   m_Layer: 0
   m_Name: SUS_Innocent_Soul 1
   m_TagString: Enemy
@@ -562,3 +563,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8174295294863350322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011767635699050740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd14a0c462545e4bb8be7d6c7650c95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  linkedSceneObject: {fileID: 2559028070970394351, guid: 2f6182850094e7f4ea3311596a092577,
+    type: 3}
