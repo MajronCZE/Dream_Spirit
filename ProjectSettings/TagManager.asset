@@ -10,6 +10,7 @@ TagManager:
   - Projectile
   - Gun
   - EnemyGood
+  - Eyes
   layers:
   - Default
   - TransparentFX
