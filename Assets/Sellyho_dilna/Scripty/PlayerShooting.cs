@@ -1,11 +1,12 @@
 using UnityEngine;
+using System.Collections; // Pøidáno pro použití IEnumerator
 
 public class PlayerShooting : MonoBehaviour
 {
     [Header("Shooting Settings")]
     public float shootingCooldown = 0.5f;
     public float raycastRange = 100f;
-    public float sphereRadius = 0.5f; // Polomìr pro SphereCast
+    public float sphereRadius = 0.5f;
     public GameObject projectilePrefab;
     public Transform shootPoint;
     public float projectileSpeed = 20f;
@@ -20,10 +21,15 @@ public class PlayerShooting : MonoBehaviour
 
     [Header("Particle Effect")]
     public ParticleSystem muzzleFlash;
-    public GameObject hitEffectPrefab; // Efekt na místì zásahu
+    public GameObject hitEffectPrefab;
 
     [Header("Sanity Manager")]
     public SanityManager sanityManager;
+
+    [Header("Camera Shake Settings")]
+    public Camera mainCamera; // Reference na hlavní kameru
+    public float shakeDuration = 0.1f; // Doba tøesení
+    public float shakeMagnitude = 0.1f; // Intenzita tøesení
 
     private float lastShotTime;
     private Vector3 gunDefaultPosition;
@@ -36,11 +42,21 @@ public class PlayerShooting : MonoBehaviour
     private float gizmosRadius;
     private bool showGizmos;
 
+    // Pro uložení pùvodní pozice kamery
+    private Vector3 originalCamPos;
+    private Coroutine shakeCoroutine;
+
     void Start()
     {
         if (gunTransform != null)
         {
             gunDefaultPosition = gunTransform.localPosition;
+        }
+
+        // Uložení pùvodní pozice kamery
+        if (mainCamera != null)
+        {
+            originalCamPos = mainCamera.transform.localPosition;
         }
     }
 
@@ -59,6 +75,17 @@ public class PlayerShooting : MonoBehaviour
             if (muzzleFlash != null)
             {
                 muzzleFlash.Play();
+            }
+
+            // Spuštìní tøesení kamery
+            if (mainCamera != null)
+            {
+                if (shakeCoroutine != null)
+                {
+                    StopCoroutine(shakeCoroutine);
+                    mainCamera.transform.localPosition = originalCamPos;
+                }
+                shakeCoroutine = StartCoroutine(ShakeCamera());
             }
         }
     }
@@ -96,7 +123,6 @@ public class PlayerShooting : MonoBehaviour
         Vector3 origin = shootPoint.position;
         Vector3 direction = shootPoint.forward;
 
-        // Pro vizualizaci potøebujeme vypoèítat koneèný bod SphereCastu
         float sphereCastDistance = raycastRange;
         bool sphereCastHit = Physics.SphereCast(origin, sphereRadius, direction, out hit, raycastRange);
 
@@ -116,7 +142,7 @@ public class PlayerShooting : MonoBehaviour
         showGizmos = true;
 
         // Pokud SphereCast nic netrefil, mùžeme zkusit OverlapSphere pro blízké nepøátele (volitelné)
-        float closeRangeRadius = 3f; // Polomìr pro OverlapSphere
+        float closeRangeRadius = 3f;
         Collider[] closeHits = Physics.OverlapSphere(shootPoint.position, closeRangeRadius);
         foreach (var collider in closeHits)
         {
@@ -126,9 +152,31 @@ public class PlayerShooting : MonoBehaviour
 
                 // Zavoláme HandleHit s informacemi o zásahu
                 HandleHit(collider, collider.transform.position, -shootPoint.forward);
-                break; // Zastavíme po prvním zásahu
+                break;
             }
         }
+    }
+
+    // Metoda pro tøesení kamery
+    private IEnumerator ShakeCamera()
+    {
+        float elapsed = 0.0f;
+
+        Vector3 originalPos = mainCamera.transform.localPosition;
+
+        while (elapsed < shakeDuration)
+        {
+            float x = Random.Range(-1f, 1f) * shakeMagnitude;
+            float y = Random.Range(-1f, 1f) * shakeMagnitude;
+
+            mainCamera.transform.localPosition = originalPos + new Vector3(x, y, 0);
+
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        mainCamera.transform.localPosition = originalPos;
     }
 
     // Method to visualize SphereCast using Gizmos
@@ -136,13 +184,10 @@ public class PlayerShooting : MonoBehaviour
     {
         if (showGizmos)
         {
-            // Nastav barvu pro vizualizaci
             Gizmos.color = Color.red;
 
-            // Kreslíme linii od poèátku do koncového bodu SphereCastu
             Gizmos.DrawLine(gizmosOrigin, gizmosOrigin + gizmosDirection * gizmosDistance);
 
-            // Poèet segmentù, které pøedstavují kolik sfér se vykreslí podél cesty
             int segments = 10;
 
             for (int i = 0; i <= segments; i++)
@@ -160,7 +205,6 @@ public class PlayerShooting : MonoBehaviour
         {
             Debug.Log($"{collider.tag} hit");
 
-            // Získání komponenty EnemyDisappear
             var enemyScript = collider.GetComponent<EnemyDisappear>();
             if (enemyScript != null)
             {
@@ -169,7 +213,6 @@ public class PlayerShooting : MonoBehaviour
 
             sanityManager?.AdjustSanityOnHit(collider.tag);
 
-            // Pøidání vizuálního efektu na místo zásahu
             if (hitEffectPrefab != null)
             {
                 Instantiate(hitEffectPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
@@ -177,7 +220,7 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator AnimateGun()
+    private IEnumerator AnimateGun()
     {
         isAnimating = true;
 
