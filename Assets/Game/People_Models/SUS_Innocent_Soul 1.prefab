@@ -377,12 +377,13 @@ GameObject:
   m_Component:
   - component: {fileID: 8528667912410788430}
   - component: {fileID: 1043452271277500845}
+  - component: {fileID: 7774641674619045348}
   - component: {fileID: 300364329937593783}
   - component: {fileID: 5163331993402267425}
   - component: {fileID: 5853619368974993018}
   m_Layer: 0
   m_Name: SUS_Innocent_Soul 1
-  m_TagString: EnemyGood
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -424,6 +425,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7774641674619045348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011767635699050740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0a3bcb5fc2050e48b2c872f024ce12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  additionalSanityLoss: 12
 --- !u!65 &300364329937593783
 BoxCollider:
   m_ObjectHideFlags: 0
