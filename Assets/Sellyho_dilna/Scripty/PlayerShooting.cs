@@ -19,6 +19,7 @@ public class PlayerShooting : MonoBehaviour
 
     [Header("Particle Effect")]
     public ParticleSystem muzzleFlash;
+    public GameObject hitEffectPrefab; // Efekt na místì zásahu
 
     [Header("Sanity Manager")]
     public SanityManager sanityManager;
@@ -56,6 +57,7 @@ public class PlayerShooting : MonoBehaviour
 
     private void Shoot()
     {
+        // Vizuální projektily
         if (projectilePrefab != null && shootPoint != null)
         {
             for (int i = 0; i < pelletCount; i++)
@@ -80,21 +82,49 @@ public class PlayerShooting : MonoBehaviour
             }
         }
 
+        // Raycast pro detekci zásahu
         RaycastHit hit;
         if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, raycastRange))
         {
-            if (hit.collider.CompareTag("Enemy") || hit.collider.CompareTag("EnemyGood"))
+            HandleHit(hit.collider, hit.point, hit.normal);
+        }
+        else
+        {
+            // Pokud Raycast nic netrefil, zkusíme najít nepøítele blízko
+            Collider[] closeHits = Physics.OverlapSphere(shootPoint.position, 2f); // 2f = polomìr pro blízké cíle
+            foreach (var collider in closeHits)
             {
-                Debug.Log($"{hit.collider.tag} hit");
-
-                // Získání komponenty EnemyDisappear
-                var enemyScript = hit.collider.GetComponent<EnemyDisappear>();
-                if (enemyScript != null)
+                if (collider.CompareTag("Enemy") || collider.CompareTag("EnemyGood"))
                 {
-                    enemyScript.TakeDamage(); // Znièíme objekt
-                }
+                    Debug.Log($"{collider.tag} hit by OverlapSphere");
 
-                sanityManager?.AdjustSanityOnHit(hit.collider.tag);
+                    // Zavoláme HandleHit s informacemi o zásahu
+                    HandleHit(collider, collider.transform.position, -shootPoint.forward);
+                    break; // Zastavíme po prvním zásahu
+                }
+            }
+        }
+    }
+
+    private void HandleHit(Collider collider, Vector3 hitPoint, Vector3 hitNormal)
+    {
+        if (collider.CompareTag("Enemy") || collider.CompareTag("EnemyGood"))
+        {
+            Debug.Log($"{collider.tag} hit");
+
+            // Získání komponenty EnemyDisappear
+            var enemyScript = collider.GetComponent<EnemyDisappear>();
+            if (enemyScript != null)
+            {
+                enemyScript.TakeDamage();
+            }
+
+            sanityManager?.AdjustSanityOnHit(collider.tag);
+
+            // Pøidání vizuálního efektu na místo zásahu
+            if (hitEffectPrefab != null)
+            {
+                Instantiate(hitEffectPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
             }
         }
     }
