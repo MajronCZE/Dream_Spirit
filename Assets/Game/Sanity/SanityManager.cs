@@ -13,6 +13,7 @@ public class SanityManager : MonoBehaviour
     public float sanityDrainPerSecond = 1f;   // Kolik sanity se ubírá každou sekundu
     public float sanityLossOnTouch = 10f;     // Kolik sanity ubrat při doteku s Enemy
     public float sanityLossOnEnemyDestroyed = 15f; // Kolik sanity ubrat při zničení Enemy
+    public float sanityLossOnFakeEnemyTouch = 8f; // Kolik sanity ubrat při doteku s FakeEnemy
 
     private bool isDead = false; // Kontrola, zda hráč "umřel"
 
@@ -56,31 +57,45 @@ public class SanityManager : MonoBehaviour
             // Snížení sanity za zásah EnemyGood
             currentSanity -= sanityDecreaseOnEnemyGood;
         }
+        else if (tag == "FakeEnemy")
+        {
+            // Zvýšení sanity za zničení FakeEnemy
+            currentSanity += sanityIncreaseOnEnemy; // Stejné jako u Enemy
+        }
 
         // Ujistěte se, že sanity zůstává v povoleném rozsahu
         currentSanity = Mathf.Clamp(currentSanity, minSanity, maxSanity);
     }
 
-    public void NotifyEnemyDestroyed()
+    public void NotifyEnemyDestroyed(string tag)
     {
-        // Snížení sanity při zničení nepřítele
-        currentSanity -= sanityLossOnEnemyDestroyed;
-        currentSanity = Mathf.Clamp(currentSanity, minSanity, maxSanity);
+        if (tag == "Enemy" || tag == "FakeEnemy")
+        {
+            // Snížení sanity při zničení nepřítele nebo FakeEnemy
+            currentSanity -= sanityLossOnEnemyDestroyed;
+            currentSanity = Mathf.Clamp(currentSanity, minSanity, maxSanity);
 
-        Debug.Log($"Enemy destroyed! Sanity decreased by {sanityLossOnEnemyDestroyed}. Current sanity: {currentSanity}");
+            Debug.Log($"{tag} destroyed! Sanity decreased by {sanityLossOnEnemyDestroyed}. Current sanity: {currentSanity}");
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Pokud hráč s tímto skriptem detekuje kolizi s objektem s tagem "Enemy"
+        // Pokud hráč detekuje kolizi s objektem s tagem "Enemy"
         if (collision.collider.CompareTag("Enemy"))
         {
-            // Snížení sanity
             currentSanity -= sanityLossOnTouch;
-            currentSanity = Mathf.Clamp(currentSanity, minSanity, maxSanity);
-
             Debug.Log("Player touched by Enemy! Sanity decreased.");
         }
+        // Pokud hráč detekuje kolizi s objektem s tagem "FakeEnemy"
+        else if (collision.collider.CompareTag("FakeEnemy"))
+        {
+            currentSanity -= sanityLossOnFakeEnemyTouch;
+            Debug.Log("Player touched by FakeEnemy! Sanity decreased.");
+        }
+
+        // Ujistěte se, že sanity zůstává v povoleném rozsahu
+        currentSanity = Mathf.Clamp(currentSanity, minSanity, maxSanity);
     }
 
     private void TriggerDeath()

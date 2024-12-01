@@ -21,8 +21,8 @@ public class EnemyBehavior : MonoBehaviour
                 SanityManager sanityManager = player.GetComponent<SanityManager>();
                 if (sanityManager != null)
                 {
-                    // Poslat zprávu SanityManageru
-                    sanityManager.NotifyEnemyDestroyed();
+                    // Poslat zprávu SanityManageru s tagem objektu
+                    sanityManager.NotifyEnemyDestroyed(gameObject.tag);
                 }
                 else
                 {

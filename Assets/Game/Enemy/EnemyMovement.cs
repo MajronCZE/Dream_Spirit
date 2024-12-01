@@ -64,7 +64,7 @@ public class EnemyMovement : MonoBehaviour
         // Informovat SanityManager
         if (sanityManager != null)
         {
-            sanityManager.NotifyEnemyDestroyed(); // Informuje o znièení nepøítele
+            sanityManager.NotifyEnemyDestroyed(gameObject.tag); // Pøedá tag objektu
         }
 
         // Znièit nepøítele
