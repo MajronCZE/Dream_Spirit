@@ -9609,6 +9609,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shotgun_Table (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8211561467470255681, guid: 1f1d106fb6cb4384380d35e7a01d1afe,
+        type: 3}
+      propertyPath: m_TagString
+      value: Eyes
+      objectReference: {fileID: 0}
     - target: {fileID: 8844650794044738811, guid: 1f1d106fb6cb4384380d35e7a01d1afe,
         type: 3}
       propertyPath: m_RootOrder
@@ -18983,7 +18988,7 @@ PrefabInstance:
     - target: {fileID: 4288369512007505253, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: maxSanity
-      value: 200
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4288369512007505253, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -18993,7 +18998,7 @@ PrefabInstance:
     - target: {fileID: 4288369512007505253, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: currentSanity
-      value: 200
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4288369512007505253, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -19174,6 +19179,21 @@ PrefabInstance:
     - target: {fileID: 4459864850019384750, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459864851310106426, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: field of view
+      value: 60.000004
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459864851310106426, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: m_FocalLength
+      value: 20.78461
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459864851310106426, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: m_projectionMatrixMode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4459864851551516604, guid: 6bacecc4f3df9584198879c73a6b6c36,
@@ -31030,8 +31050,8 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -31047,7 +31067,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1154261092}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
