@@ -17,9 +17,11 @@ public class MirrorManager : MonoBehaviour
 
     [Header("Options")]
     public bool disablePlayerMovement = true;        // Pokud je zaškrtnuto, hráè se nemùže hýbat pøi zobrazení zrcadla
+    public float autoHideDelay = 2f;                 // Doba, po které se zrcátko automaticky schová (v sekundách)
 
     private bool mirrorActive = false;       // Stav zrcadla (zobrazeno/skryto)
     private bool isAnimating = false;        // Kontrola, zda probíhá animace
+    private Coroutine autoHideCoroutine;     // Reference na Coroutine pro automatické schování
 
     private FirstPersonController playerController;  // Reference na skript FirstPersonController
 
@@ -54,6 +56,13 @@ public class MirrorManager : MonoBehaviour
             }
             else
             {
+                // Zrušení automatického schování, pokud hráè manuálnì skryje zrcátko
+                if (autoHideCoroutine != null)
+                {
+                    StopCoroutine(autoHideCoroutine);
+                    autoHideCoroutine = null;
+                }
+
                 // Skrytí zrcadla
                 StartCoroutine(HideMirror());
             }
@@ -120,6 +129,9 @@ public class MirrorManager : MonoBehaviour
 
         isAnimating = false;
         mirrorActive = true;
+
+        // Spustíme automatické schování po nastavené dobì
+        autoHideCoroutine = StartCoroutine(AutoHideMirror());
     }
 
     IEnumerator HideMirror()
@@ -179,5 +191,14 @@ public class MirrorManager : MonoBehaviour
 
         isAnimating = false;
         mirrorActive = false;
+    }
+
+    IEnumerator AutoHideMirror()
+    {
+        // Poèkej nastavenou dobu (napø. 2 sekundy)
+        yield return new WaitForSeconds(autoHideDelay);
+
+        // Skryj zrcátko
+        StartCoroutine(HideMirror());
     }
 }
