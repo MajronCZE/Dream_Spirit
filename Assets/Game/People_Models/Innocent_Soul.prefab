@@ -452,6 +452,7 @@ MonoBehaviour:
   destroyableTags:
   - Enemy
   - EnemyGood
+  - FakeEnemy
 --- !u!82 &5853619368974993018
 AudioSource:
   m_ObjectHideFlags: 0

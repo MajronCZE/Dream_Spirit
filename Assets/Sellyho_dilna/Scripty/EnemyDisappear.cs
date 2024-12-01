@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyDisappear : MonoBehaviour
 {
     [Header("Tags for enemies that can be destroyed")]
-    public string[] destroyableTags = { "Enemy", "EnemyGood" }; // Tagy, které mohou být znièeny
+    public string[] destroyableTags = { "Enemy", "EnemyGood", "FakeEnemy" }; // Pøidán tag "FakeEnemy"
 
     void OnCollisionEnter(Collision collision)
     {
