@@ -21229,7 +21229,12 @@ PrefabInstance:
     - target: {fileID: 4378129483147134835, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: raycastRange
-      value: 1470.15
+      value: 1461.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 4378129483147134835, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: sphereRadius
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4378129483147134835, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -58110,7 +58115,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848330662}
   m_LocalRotation: {x: -0, y: 0.000000014901159, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6369972, y: -0.592, z: 2.7209988}
+  m_LocalPosition: {x: 0.6369972, y: -0.592, z: 1.417}
   m_LocalScale: {x: 0.13379, y: 0.13379, z: 0.13379}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -58417,7 +58422,7 @@ Transform:
   m_Children:
   - {fileID: 1098016074}
   m_Father: {fileID: 1154261101}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -17.12, z: 0}
 --- !u!23 &1877401648
 MeshRenderer:
@@ -65636,7 +65641,7 @@ PrefabInstance:
     - target: {fileID: 1545331483633851228, guid: 8d041669a606d804a8433b0387e93a74,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1545331483633851228, guid: 8d041669a606d804a8433b0387e93a74,
         type: 3}

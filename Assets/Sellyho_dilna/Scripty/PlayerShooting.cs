@@ -5,6 +5,7 @@ public class PlayerShooting : MonoBehaviour
     [Header("Shooting Settings")]
     public float shootingCooldown = 0.5f;
     public float raycastRange = 100f;
+    public float sphereRadius = 0.5f; // Polomìr pro SphereCast
     public GameObject projectilePrefab;
     public Transform shootPoint;
     public float projectileSpeed = 20f;
@@ -27,6 +28,13 @@ public class PlayerShooting : MonoBehaviour
     private float lastShotTime;
     private Vector3 gunDefaultPosition;
     private bool isAnimating = false;
+
+    // Variables for Gizmos visualization
+    private Vector3 gizmosOrigin;
+    private Vector3 gizmosDirection;
+    private float gizmosDistance;
+    private float gizmosRadius;
+    private bool showGizmos;
 
     void Start()
     {
@@ -65,6 +73,7 @@ public class PlayerShooting : MonoBehaviour
                 GameObject projectile = Instantiate(projectilePrefab, shootPoint.position, Quaternion.identity);
                 Vector3 baseDirection = shootPoint.forward;
 
+                // Dynamický rozptyl støel
                 float angleX = Random.Range(-spreadAngle, spreadAngle);
                 float angleY = Random.Range(-spreadAngle, spreadAngle);
                 Quaternion spreadRotation = Quaternion.Euler(angleY, angleX, 0);
@@ -82,26 +91,65 @@ public class PlayerShooting : MonoBehaviour
             }
         }
 
-        // Raycast pro detekci zásahu
+        // SphereCast pro detekci zásahu
         RaycastHit hit;
-        if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, raycastRange))
+        Vector3 origin = shootPoint.position;
+        Vector3 direction = shootPoint.forward;
+
+        // Pro vizualizaci potøebujeme vypoèítat koneèný bod SphereCastu
+        float sphereCastDistance = raycastRange;
+        bool sphereCastHit = Physics.SphereCast(origin, sphereRadius, direction, out hit, raycastRange);
+
+        if (sphereCastHit)
         {
             HandleHit(hit.collider, hit.point, hit.normal);
-        }
-        else
-        {
-            // Pokud Raycast nic netrefil, zkusíme najít nepøítele blízko
-            Collider[] closeHits = Physics.OverlapSphere(shootPoint.position, 2f); // 2f = polomìr pro blízké cíle
-            foreach (var collider in closeHits)
-            {
-                if (collider.CompareTag("Enemy") || collider.CompareTag("EnemyGood"))
-                {
-                    Debug.Log($"{collider.tag} hit by OverlapSphere");
 
-                    // Zavoláme HandleHit s informacemi o zásahu
-                    HandleHit(collider, collider.transform.position, -shootPoint.forward);
-                    break; // Zastavíme po prvním zásahu
-                }
+            // Upravit vzdálenost pro vizualizaci na základì místa zásahu
+            sphereCastDistance = hit.distance;
+        }
+
+        // Store variables for Gizmos visualization
+        gizmosOrigin = origin;
+        gizmosDirection = direction;
+        gizmosDistance = sphereCastDistance;
+        gizmosRadius = sphereRadius;
+        showGizmos = true;
+
+        // Pokud SphereCast nic netrefil, mùžeme zkusit OverlapSphere pro blízké nepøátele (volitelné)
+        float closeRangeRadius = 3f; // Polomìr pro OverlapSphere
+        Collider[] closeHits = Physics.OverlapSphere(shootPoint.position, closeRangeRadius);
+        foreach (var collider in closeHits)
+        {
+            if (collider.CompareTag("Enemy") || collider.CompareTag("EnemyGood"))
+            {
+                Debug.Log($"{collider.tag} hit by OverlapSphere");
+
+                // Zavoláme HandleHit s informacemi o zásahu
+                HandleHit(collider, collider.transform.position, -shootPoint.forward);
+                break; // Zastavíme po prvním zásahu
+            }
+        }
+    }
+
+    // Method to visualize SphereCast using Gizmos
+    private void OnDrawGizmos()
+    {
+        if (showGizmos)
+        {
+            // Nastav barvu pro vizualizaci
+            Gizmos.color = Color.red;
+
+            // Kreslíme linii od poèátku do koncového bodu SphereCastu
+            Gizmos.DrawLine(gizmosOrigin, gizmosOrigin + gizmosDirection * gizmosDistance);
+
+            // Poèet segmentù, které pøedstavují kolik sfér se vykreslí podél cesty
+            int segments = 10;
+
+            for (int i = 0; i <= segments; i++)
+            {
+                float t = (float)i / segments;
+                Vector3 position = gizmosOrigin + gizmosDirection * gizmosDistance * t;
+                Gizmos.DrawWireSphere(position, gizmosRadius);
             }
         }
     }
